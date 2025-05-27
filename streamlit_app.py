@@ -1,21 +1,42 @@
 import streamlit as st
 import requests
 import pandas as pd
+from PIL import Image
 
 # Configura la pagina
 st.set_page_config(page_title="HoliSoft PDF Processor", layout="wide")
 
-# Titolo e breve descrizione del servizio
-st.title("📄 HoliSoft PDF Processor")
-st.markdown(
-    "Benvenuto in **HoliSoft PDF Processor**, il servizio di HoliSoft che ti permette di elaborare PDF non strutturati "
-    "e trasformarli in dati strutturati, pronti per essere importati nel tuo gestionale."
-)
-st.markdown("---")
-st.markdown("### Prova il servizio")
+# Carica il logo 
+try:
+    logo = Image.open("holisoft_logo.png")
+    st.image(logo, width=150)
+except FileNotFoundError:
+    st.write("Logo non trovato. Assicurati di avere 'holisoft_logo.png' nella cartella del progetto.")
 
-# 1) Funzione per ottenere il token
-@st.cache_data
+# Hero section: titolo e descrizione
+st.title("Dì addio al data entry manuale dei DDT")
+st.subheader("L'AI di HoliSoft trasforma i tuoi PDF non strutturati in dati importabili nel gestionale in pochi secondi.")
+
+# Features in tre colonne
+st.markdown("---")
+col1, col2, col3 = st.columns(3)
+col1.markdown("### 🚀 Velocità"
+             "
+- Estrai dati da PDF in meno di un minuto.")
+col2.markdown("### 🎯 Precisione"
+             "
+- Riduci errori di digitazione e incongruenze.")
+col3.markdown("### 🔄 Integrazione"
+             "
+- Esporta file CSV o JSON pronti per il tuo gestionale.")
+
+st.markdown("---")
+
+# Invito all'azione
+st.markdown("## Prova il servizio ora")
+st.markdown("Carica un PDF di DDT e guarda l'AI all'opera:")
+
+# Funzioni di autenticazione e processing
 def get_token():
     url = st.secrets["api"]["auth_url"]
     payload = {
@@ -25,10 +46,9 @@ def get_token():
     resp = requests.post(url, json=payload)
     resp.raise_for_status()
     data = resp.json()
-    # Restituisce il campo "access_token" o "token" a seconda dell’API
     return data.get("access_token") or data.get("token")
 
-# 2) Funzione per inviare il PDF all’API di processing
+
 def process_pdf(token: str, pdf_bytes: bytes):
     url = st.secrets["api"]["process_url"]
     headers = {"Authorization": f"Bearer {token}"}
@@ -37,35 +57,26 @@ def process_pdf(token: str, pdf_bytes: bytes):
     resp.raise_for_status()
     return resp.json()
 
-def main():
-    st.title("📄 PDF → API Processor")
-
-    # Upload del file PDF
-    uploaded_file = st.file_uploader("Carica qui il tuo PDF", type="pdf")
-    if not uploaded_file:
-        return
-
-    # 3) Ottieni token
+# Applicazione principale
+uploaded_file = st.file_uploader("Carica il tuo PDF", type="pdf")
+if uploaded_file:
     with st.spinner("Ottenendo token…"):
         try:
             token = get_token()
         except Exception as e:
             st.error(f"Errore autenticazione: {e}")
-            return
+            st.stop()
 
-    # 4) Processa il PDF
     with st.spinner("Elaborando il PDF…"):
         try:
             result = process_pdf(token, uploaded_file.read())
         except Exception as e:
-            st.error(f"Errore durante l’elaborazione: {e}")
-            return
+            st.error(f"Errore durante l'elaborazione: {e}")
+            st.stop()
 
     st.success("Elaborazione completata!")
 
-    # ------------------------------------------------
-    # 5) Mostra i dati di testata in un riquadro (st.info)
-    # ------------------------------------------------
+    # Dati di testata
     testata = result["data"]["TestataDocumento"]
     doc   = testata["Documento"]
     forn  = testata["Fornitore"]
@@ -75,26 +86,20 @@ def main():
 **Documento**  
 - Numero: {doc['Numero']}  
 - Tipo: {doc['Tipo']}  
-- Data: {doc['Data']}
+- Data: {doc['Data']}  
 
 **Fornitore**  
 - Ragione Sociale: {forn['RagioneSociale']}  
-- P.IVA: {forn['PartitaIva']}
+- P.IVA: {forn['PartitaIva']}  
 
 **Cliente**  
 - Ragione Sociale: {cli['RagioneSociale']}  
-- P.IVA: {cli['PartitaIva']}
+- P.IVA: {cli['PartitaIva']}  
 """
     st.info(header_md)
 
-    # ------------------------------------------------
-    # 6) Mostra la lista degli articoli in tabella
-    # ------------------------------------------------
+    # Tabella articoli
     articoli = result["data"]["Articoli"]
     df = pd.DataFrame(articoli)
-
     st.markdown("### 📋 Lista Articoli")
     st.dataframe(df, use_container_width=True)
-
-if __name__ == "__main__":
-    main()

@@ -2,8 +2,17 @@ import streamlit as st
 import requests
 import pandas as pd
 
-# Configura la pagina (opzionale)
-st.set_page_config(page_title="PDF → API Processor", layout="wide")
+# Configura la pagina
+st.set_page_config(page_title="HoliSoft PDF Processor", layout="wide")
+
+# Titolo e breve descrizione del servizio
+st.title("📄 HoliSoft PDF Processor")
+st.markdown(
+    "Benvenuto in **HoliSoft PDF Processor**, il servizio di HoliSoft che ti permette di elaborare PDF non strutturati "
+    "e trasformarli in dati strutturati, pronti per essere importati nel tuo gestionale."
+)
+st.markdown("---")
+st.markdown("### Prova il servizio")
 
 # 1) Funzione per ottenere il token
 @st.cache_data

@@ -20,15 +20,9 @@ st.subheader("L'AI di HoliSoft trasforma i tuoi PDF non strutturati in dati impo
 # Features in tre colonne
 st.markdown("---")
 col1, col2, col3 = st.columns(3)
-col1.markdown("### 🚀 Velocità"
-             "
-- Estrai dati da PDF in meno di un minuto.")
-col2.markdown("### 🎯 Precisione"
-             "
-- Riduci errori di digitazione e incongruenze.")
-col3.markdown("### 🔄 Integrazione"
-             "
-- Esporta file CSV o JSON pronti per il tuo gestionale.")
+col1.markdown("### 🚀 Velocità - Estrai dati da PDF in meno di un minuto.")
+col2.markdown("### 🎯 Precisione - Riduci errori di digitazione e incongruenze.")
+col3.markdown("### 🔄 Integrazione - Esporta file CSV o JSON pronti per il tuo gestionale.")
 
 st.markdown("---")
 

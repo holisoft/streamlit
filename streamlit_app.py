@@ -22,7 +22,7 @@ st.markdown("---")
 col1, col2, col3 = st.columns(3)
 col1.markdown("### 🚀 Velocità - Estrai dati da PDF in meno di un minuto.")
 col2.markdown("### 🎯 Precisione - Riduci errori di digitazione e incongruenze.")
-col3.markdown("### 🔄 Integrazione - Esporta file CSV o JSON pronti per il tuo gestionale.")
+col3.markdown("### 🔄 Integrazione - Importa i dati da un JSON pronti per il tuo gestionale.")
 
 st.markdown("---")
 

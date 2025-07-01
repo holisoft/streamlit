@@ -52,7 +52,9 @@ def process_pdf(token: str, pdf_bytes: bytes, partita_iva_cliente=None, partita_
     headers = {"Authorization": f"Bearer {token}"}
     files = {"file": ("document.pdf", pdf_bytes, "application/pdf")}
     
-    data = {}
+    data = {
+	    "test": "true"
+    }   
     if partita_iva_cliente:
         data["customer"] = partita_iva_cliente
     if partita_iva_fornitore:
